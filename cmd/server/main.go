@@ -4,9 +4,9 @@ import (
 	"fmt"
 	"net/http"
 
+	"github.com/manujo-varghese/go-rest-api/internal/article"
+	"github.com/manujo-varghese/go-rest-api/internal/database"
 	transportHTTP "github.com/manujo-varghese/go-rest-api/internal/transport/http"
-	"github.com/manujo-varghese/go-rest-api/internal/transport/http/article"
-	"github.com/manujo-varghese/go-rest-api/internal/transport/http/database"
 )
 
 // App - the struct which contai things l;ike pointers
@@ -16,7 +16,6 @@ type App struct{}
 // Run - sets up our application
 func (app *App) Run() error  {
 	fmt.Println("Setting Up Our App")
-
 
 	var err error
 	db, err = database.NewDatabase()

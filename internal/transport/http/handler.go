@@ -6,7 +6,7 @@ import (
 	"strconv"
 
 	"github.com/gorilla/mux"
-	"github.com/manujo-varghese/go-rest-api/internal/transport/http/article"
+	"github.com/manujo-varghese/go-rest-api/internal/article"
 )
 
 // HAndler -stores pointer to article service

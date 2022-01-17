@@ -2,7 +2,7 @@ package database
 
 import (
 	"github.com/jinzhu/gorm"
-	"github.com/manujo-varghese/go-rest-api/internal/transport/http/article"
+	"github.com/manujo-varghese/go-rest-api/internal/article"
 )
 
 // MigrateDB - migrates database and create article table
