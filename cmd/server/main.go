@@ -5,6 +5,8 @@ import (
 	"net/http"
 
 	transportHTTP "github.com/manujo-varghese/go-rest-api/internal/transport/http"
+	"github.com/manujo-varghese/go-rest-api/internal/transport/http/article"
+	"github.com/manujo-varghese/go-rest-api/internal/transport/http/database"
 )
 
 // App - the struct which contai things l;ike pointers
@@ -15,7 +17,20 @@ type App struct{}
 func (app *App) Run() error  {
 	fmt.Println("Setting Up Our App")
 
-	handler := transportHTTP.NewHandler()
+
+	var err error
+	db, err = database.NewDatabase()
+	if err != nil{
+		return err
+	}
+	err= database.MigrateDB(db)
+	if err != nil{
+		return err
+	}
+
+	articleService := article.NewService(db)
+
+	handler := transportHTTP.NewHandler(articleService)
 	handler.SetupRoutes()
 
 	if err := http.ListenAndServe(":8080", handler.Router); err != nil{
