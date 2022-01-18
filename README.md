@@ -77,3 +77,18 @@ You should get a similar response as per the question:<br />
 4: GET http://localhost:8080/api/health <br />
  <br />
 This is to make sure the app is up and running returns a message "I am Alive" if its !!!!
+
+
+# Test Cases :
+
+Test cases are writtern inside the folder test<br />
+and to run locally you can use the command;<br /> go test  ./... -tags=e2e -v   <br />
+
+# Why Go and GORM
+
+Building API with strongly typed langauge is a cool way and i like GO
+
+# Time i took to complete and what could i have done with more time?
+
+So i took around 3 hours to complete as i browse around some syntax with GO (as Go is not my everyday language as of now),
+If i had more time i will spend some more time writing comprehensive test cases to make sure everything is validated
