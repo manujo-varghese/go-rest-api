@@ -1,6 +1,7 @@
 package article
 
 import (
+	"strconv"
 	"time"
 
 	"github.com/jinzhu/gorm"
@@ -19,6 +20,14 @@ type Article struct{
 	Date time.Time
 	Body string
 	Tags pq.StringArray `gorm:"type:text[]"`
+
+}
+
+type Result struct{
+	Tag string
+	Count int
+	Articles pq.StringArray `gorm:"type:text[]"`
+	RelatedTags pq.StringArray `gorm:"type:text[]"`
 
 }
 
@@ -47,12 +56,42 @@ func (s *Service) GetArticle(ID uint) (Article, error)  {
 }
 
 // GetArticleByTagDate - retrives all articles by tag and date (path -/api/article/{tag}/{date})
-func (s *Service) GetArticleByTagDate(tag string, date string) ([]Article, error)  {
+func (s *Service) GetArticleByTagDate(tag string, date string) (Result, error)  {
 	var articles []Article
-	if result := s.DB.Find(&articles).Where("tag = ?", tag); result.Error != nil{
-		return []Article{}, result.Error
-	}	
-	return articles, nil
+	var articlesArray []string = nil
+	var relatedTags = make(map[string]bool)
+	var uniqueRelatedFlags = []string{}
+	var count int
+	const layout = "2006-01-02"
+	slicedDate := date[0:4] + "-" + date[4:6] + "-" + date[6:8]
+	tm, _ := time.Parse(layout,slicedDate)
+	if result := s.DB.Where("Date = ? ",tm).Find(&articles); result.Error != nil{
+		return Result{}, result.Error
+	}
+	for _,article := range articles{
+		articlesArray = append(articlesArray, strconv.FormatInt(int64(article.ID),10))
+		for _,tagLoop := range article.Tags{
+			count = count + len(article.Tags)
+			if tagLoop == tag{
+				for _,selectedTags := range article.Tags{
+					if (!relatedTags[selectedTags]) && selectedTags != tag {
+						uniqueRelatedFlags = append(uniqueRelatedFlags, selectedTags)
+						relatedTags[selectedTags] = true
+					}
+				}
+			}
+		}
+	}
+	var result Result
+	result.Tag = tag
+	result.Count = count
+	firstTen := len(articlesArray)
+	if firstTen > 10{
+		firstTen = 10
+	}
+	result.Articles = articlesArray[0:firstTen]
+	result.RelatedTags = uniqueRelatedFlags
+	return result, nil
 }
 
 // PostArticle - adds a new article 
